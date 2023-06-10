@@ -18,7 +18,7 @@ class SigIn(UserCacheMixin, forms.Form):
     password = forms.CharField(label=_('Password'), strip=False, widget=forms.PasswordInput)
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         if settings.USE_REMEMBER_ME:
             self.fields['remember_me'] = forms.BooleanField(label=_('Remember me'), required=False)

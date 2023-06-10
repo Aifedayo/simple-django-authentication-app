@@ -19,6 +19,12 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import View, FormView
 from django.conf import settings
 
+from .forms import (
+    SignInViaUsernameForm, SignInViaEmailForm, SignInViaEmailOrUsernameForm, SignUpForm,
+    RestorePasswordForm, RestorePasswordViaEmailOrUsernameForm, RemindUsernameForm,
+    ResendActivationCodeForm, ResendActivationCodeViaEmailForm, ChangeProfileForm, ChangeEmailForm,
+)
+
 from .models import Account
 
 class GuestOnlyView(View):
