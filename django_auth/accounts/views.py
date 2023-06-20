@@ -30,4 +30,46 @@ class GuestOnlyView(View):
         return super().dispatch(request, *args, **kwargs)
 
 class LogInView(GuestOnlyView, FormView):
-    pass
+    template_name = 'accounts/log_in.html'
+
+    @staticmethod
+    def get_form_class(**kwargs):
+        if settings.DISABLE_USERNAME or settings.LOGIN_VIA_EMAIL:
+            return SignInViaEmailForm
+        
+        if settings.LOGIN_VIA_EMAIL_OR_USERNAME:
+            return SignInViaEmailOrUsernameForm
+        
+        return SignInViaUsernameForm
+    
+    @method_decorator(sensitive_post_parameters('password'))
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        # Sets a test cookie to make sure the user has cookies enabled
+        request.session.set_test_cookie()
+
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        request = self.request
+
+        # If the test cookie worked, go ahead and delete it since its no longer needed
+        if request.session.test_cookie_worked():
+            request.session.delete_test_cookie()
+
+        # The default Django's "remember me" lifetime is 2 weeks and can be changed by modifying
+        # the SESSION_COOKIE_AGE settings' option.
+        if settings.USE_REMEMBER_ME:
+            if not form.cleaned_data['remember_me']:
+                request.session.set_expiry(0)
+
+        login(request, form.user_cache)
+
+        redirect_to = request.POST.get(REDIRECT_FIELD_NAME, request.GET.get(REDIRECT_FIELD_NAME))
+        url_is_safe = is_safe_url(redirect_to, allowed_hosts=request.get_host(), require_https=request.is_secure())
+
+        if url_is_safe:
+            return redirect(redirect_to)
+        
+        return redirect(settings.LOGIN_REDIRECT_URL)
