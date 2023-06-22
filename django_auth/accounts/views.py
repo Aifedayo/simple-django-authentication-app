@@ -18,3 +18,13 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import View, FormView
 from django.conf import settings
+
+from .models import Account
+
+class GuestOnlyView(View):
+    def dispatch(self, request, *args, **kwargs):
+        # Redirect to the index page if the user is already authenticated
+        if request.user.is_authenticated:
+            return redirect(settings.LOGIN_REDIRECT_URL)
+        
+        return super().dispatch(request, *args, **kwargs)
