@@ -28,3 +28,6 @@ class GuestOnlyView(View):
             return redirect(settings.LOGIN_REDIRECT_URL)
         
         return super().dispatch(request, *args, **kwargs)
+
+class LogInView(GuestOnlyView, FormView):
+    pass
