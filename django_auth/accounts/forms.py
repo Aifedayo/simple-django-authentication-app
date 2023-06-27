@@ -72,6 +72,10 @@ class EmailForm(UserCacheMixin, forms.Form):
         
         if not user.is_active:
             raise ValidationError(_('This account is no longer active'))
+        
+        self.user_cache = user
+
+        return email
 
 
 class SignInViaEmailForm(SignIn, EmailForm):
@@ -87,7 +91,7 @@ class EmailOrUsernameForm(UserCacheMixin, forms.Form):
 
     def clean_email_or_username(self):
         email_or_username = self.cleaned_data['email_or_username']
-        
+
         user = User.objects.filter(Q(username=email_or_username) | Q(email__iexact=email_or_username)).first()
         if not user:
             raise ValidationError(_('You entered an invalid email address or username.'))
