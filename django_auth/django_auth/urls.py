@@ -23,6 +23,9 @@ from main.views import (IndexPageView, ChangeLanguageView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
     path('', IndexPageView.as_view(), name='index'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
