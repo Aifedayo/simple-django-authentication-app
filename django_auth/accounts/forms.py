@@ -113,7 +113,9 @@ class SignInViaEmailOrUsernameForm(SignIn, EmailOrUsernameForm):
 
 
 class SignUpForm(UserCreationForm):
-    pass
+    class Meta:
+        model = User
+        fields = settings.SIGN_UP_FIELDS
 
 class ResendActivationCodeForm(UserCacheMixin, forms.Form):
     pass
