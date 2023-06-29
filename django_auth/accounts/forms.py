@@ -87,7 +87,11 @@ class EmailOrUsernameForm(UserCacheMixin, forms.Form):
 
 
 class SignInViaEmailOrUsernameForm(SignIn, EmailOrUsernameForm):
-    pass
+    @property
+    def field_order(self):
+        if settings.USE_REMEMBER_ME:
+            return ['email_or_username', 'password', 'remember_me']
+        return ['email_or_username', 'password']
 
 
 class SignUpForm(UserCreationForm):
