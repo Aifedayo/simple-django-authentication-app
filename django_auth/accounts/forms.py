@@ -78,8 +78,8 @@ class SignInViaEmailForm(SignIn, EmailForm):
     @property
     def field_order(self):
         if settings.REMEMBER_ME:
-            return ['username', 'password', 'remember_me']
-        return ['username', 'password']
+            return ['email', 'password', 'remember_me']
+        return ['email', 'password']
 
 
 class EmailOrUsernameForm(UserCacheMixin, forms.Form):
