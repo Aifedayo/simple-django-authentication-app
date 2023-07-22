@@ -79,3 +79,7 @@ class LogInView(GuestOnlyView, FormView):
             return redirect(redirect_to)
         
         return redirect(settings.LOGIN_REDIRECT_URL)
+
+
+class LogOutView(LoginRequiredMixin, BaseLogoutView):
+    template_name = 'accounts/log_out.html'
