@@ -83,3 +83,24 @@ class LogInView(GuestOnlyView, FormView):
 
 class LogOutView(LoginRequiredMixin, BaseLogoutView):
     template_name = 'accounts/log_out.html'
+
+
+class SignUpVide(GuestOnlyView, FormView):
+    template_name = 'accounts/signup.html'
+    form_class = SignUpForm
+
+    def form_valid(self, form):
+        request = self.request
+        user = form.save(commit=False)
+
+        if settings.DISABLE_USERNAME:
+            # Set a temporary username
+            user.username = get_random_string()
+        else:
+            user.username = form.cleaned_data['username']
+
+        if settings.ENABLE_USER_ACTIVATION:
+            user.is_active = False
+
+        # Create a user record
+        user.save()
