@@ -104,3 +104,28 @@ class SignUpVide(GuestOnlyView, FormView):
 
         # Create a user record
         user.save()
+
+        if settings.DISABLE_USERNAME:
+            user.username = f'user_{user.id}'
+            user.save()
+
+        if settings.ENABLE_USER_ACTIVATION:
+            code = get_random_string(20)
+
+            act = Account()
+            act.code = code
+            act.user = user
+            act.save()
+
+            send_activation_email(request, user.email, code)
+
+            messages.success(
+                request, _('You are signed up. To activate your account, follow the link sent to your email')
+            )
+        else:
+            raw_password = form.cleaned_data['password']
+            user = authenticate(username=user, password=raw_password)
+            login(request, user)
+
+            messages.success(request, _('You are successfully signed up!'))
+        return redirect('index')
