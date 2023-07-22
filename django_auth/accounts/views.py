@@ -19,6 +19,8 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import View, FormView
 from django.conf import settings
 
+from .utils import send_activation_email
+
 from .forms import (
     SignInViaUsernameForm, SignInViaEmailForm, SignInViaEmailOrUsernameForm, SignUpForm,
     RestorePasswordForm, RestorePasswordViaEmailOrUsernameForm, RemindUsernameForm,
@@ -36,6 +38,7 @@ class GuestOnlyView(View):
         return super().dispatch(request, *args, **kwargs)
 
 class LogInView(GuestOnlyView, FormView):
+    # Using Class Based View
     template_name = 'accounts/log_in.html'
 
     @staticmethod
@@ -85,7 +88,7 @@ class LogOutView(LoginRequiredMixin, BaseLogoutView):
     template_name = 'accounts/log_out.html'
 
 
-class SignUpVide(GuestOnlyView, FormView):
+class SignUpView(GuestOnlyView, FormView):
     template_name = 'accounts/signup.html'
     form_class = SignUpForm
 
